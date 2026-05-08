@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>证件照质量测试</title>
+</head>
+<body>
+    <h1>上传证件照</h1>
+    <input type="file" id="fileInput" accept="image/jpeg,image/png">
+    <button onclick="upload()">评测质量</button>
+    <div id="result"></div>
+    <script>
+        async function upload() {
+            const file = document.getElementById('fileInput').files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await fetch('http://127.0.0.1:5001/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+            document.getElementById('result').innerHTML = `
+                <p>文件名：${data.filename}</p>
+                <p>BRISQUE分数：${data.brisque_score}</p>
+                <p>质量判定：${data.quality === 'good' ? '✅ 合格' : '❌ 不合格'}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
