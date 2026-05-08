@@ -48,5 +48,5 @@ jobs:
       if: always() # ← 关键：无论测试成败都上传
       with:
         name: playwright-report
-        path: e2e-tests/playwright-report/
+        path: ./e2e-tests/playwright-report/
         retention-days: 30
