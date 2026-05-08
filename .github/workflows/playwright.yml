@@ -21,6 +21,24 @@ jobs:
     - name: Install Playwright Browsers
       working-directory: ./e2e-tests
       run: npx playwright install --with-deps
+
+    # 启动前端 (http-server)
+    - name: Start frontend
+        run: |
+          cd frontend
+          npx http-server -p 3000 &
+          sleep 3  # 等待服务启动  
+
+    # 可选：启动后端 Flask
+    - name: Start backend
+        run: |
+          cd backend
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          python3 app.py &
+          sleep 5       
+
     - name: Run Playwright tests
       working-directory: ./e2e-tests
       run: npx playwright test
