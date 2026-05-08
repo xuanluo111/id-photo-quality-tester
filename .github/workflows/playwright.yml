@@ -10,6 +10,8 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -61,7 +63,7 @@ jobs:
         name: playwright-report
         path: ./e2e-tests/playwright-report/
         retention-days: 30
-        
+
     - name: Deploy report to GitHub Pages
       if: always()
       uses: peaceiris/actions-gh-pages@v3
