@@ -23,7 +23,6 @@ jobs:
       run: npx playwright test
       # 确保测试运行，即使失败也继续上传报告
       continue-on-error: true
-    - name: Upload Playwright report  
     - uses: actions/upload-artifact@v5
       if: always() # ← 关键：无论测试成败都上传
       with:
