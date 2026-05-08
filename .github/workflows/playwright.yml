@@ -44,10 +44,20 @@ jobs:
       run: npx playwright test
       # 确保测试运行，即使失败也继续上传报告
       continue-on-error: true
+
+    - name: Check report generated
+      run: |
+        echo "=== e2e-tests 目录内容 ==="
+        ls -la ./e2e-tests/
+        echo "=== playwright-report 目录 ==="
+        ls -la ./e2e-tests/playwright-report/ 2>/dev/null || echo "❌ 目录不存在"
+        echo "=== 查找所有 HTML 文件 ==="
+        find ./e2e-tests -name "*.html" 2>/dev/null
+      if: always()
+  
     - uses: actions/upload-artifact@v5
       if: always() # ← 关键：无论测试成败都上传
       with:
         name: playwright-report
         path: ./e2e-tests/playwright-report/
-        run: unzip playwright-report.zip -d pw-report && cd pw-report && npx playwright show-report .
         retention-days: 30
