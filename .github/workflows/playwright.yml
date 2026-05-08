@@ -49,4 +49,5 @@ jobs:
       with:
         name: playwright-report
         path: ./e2e-tests/playwright-report/
+        run: npx playwright show-report
         retention-days: 30
