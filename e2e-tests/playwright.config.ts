@@ -16,5 +16,5 @@ export default defineConfig({
         { name: 'firefox', use: { browserName: 'firefox' } },
         { name: 'webkit', use: { browserName: 'webkit' } },
     ],
-    reporter: [['html', { OutputFolder: 'playwright-report' }]],
+    reporter: [['html', { outputFolder: 'playwright-report' }]],
 });
