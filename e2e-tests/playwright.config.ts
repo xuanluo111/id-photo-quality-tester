@@ -1,5 +1,4 @@
 import { defineConfig } from "@playwright/test";
-import { OutputFileType } from "typescript";
 
 export default defineConfig({
     testDir: './tests',
