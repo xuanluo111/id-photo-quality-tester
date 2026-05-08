@@ -1,7 +1,10 @@
-node_modules/
-venv/
-uploads/
+e2e-tests/node_modules/
+backend/venv/
+backend/uploads/
+backend/.idea/
+backend/__pycache__/、*.pyc
+backend/models/*.yml
+frontend/.idea/
 .DS_Store
 .env
-__pycache__/、*.pyc
-models/*.yml
+
