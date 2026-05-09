@@ -10,8 +10,6 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    # permissions:
-    #   contents: write
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -46,16 +44,6 @@ jobs:
       run: npx playwright test
       # 确保测试运行，即使失败也继续上传报告
       continue-on-error: true
-
-    - name: Check report generated
-      run: |
-        echo "=== e2e-tests 目录内容 ==="
-        ls -la ./e2e-tests/
-        echo "=== playwright-report 目录 ==="
-        ls -la ./e2e-tests/playwright-report/ 2>/dev/null || echo "❌ 目录不存在"
-        echo "=== 查找所有 HTML 文件 ==="
-        find ./e2e-tests -name "*.html" 2>/dev/null
-      if: always()
   
     - uses: actions/upload-artifact@v5
       if: always() # ← 关键：无论测试成败都上传
@@ -63,4 +51,34 @@ jobs:
         name: playwright-report
         path: ./e2e-tests/playwright-report/
         retention-days: 30
-        run: npx playwright show-report      
+
+  deploy:
+    # 确保需要测试任务成功完成（或者即使失败也可部署，用于调试）
+    needs: test
+    # 在任何情况下都运行，方便查看失败报告
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write      # 授予对 Pages 的写入权限
+      id-token: write   # 用于从 OIDC 获取令牌
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report
+          path: .e2e-tests/playwright-report
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.e2e-tests/playwright-report'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
