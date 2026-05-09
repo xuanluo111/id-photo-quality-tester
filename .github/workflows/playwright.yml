@@ -10,8 +10,8 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    # permissions:
+    #   contents: write
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
@@ -64,11 +64,7 @@ jobs:
         path: ./e2e-tests/playwright-report/
         retention-days: 30
 
-    - name: Deploy report to GitHub Pages
-      if: always()
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./e2e-tests/playwright-report
-        destination_dir: ./report/${{ github.run_id }}
-        force_orphan: true
+    - name: Run Playwright show-report
+      working-directory: ./e2e-tests/playwright-report
+      run: npx playwright test ame-of-my-extracted-playwright-report
+
