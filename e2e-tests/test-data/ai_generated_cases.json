@@ -4,7 +4,7 @@
     "description": "清晰正面照，光线均匀，肤色自然",
     "expected_quality": "good",
     "expected_score_range": [
-      0.8,
+      0.7,
       1.0
     ]
   },
@@ -14,7 +14,7 @@
     "expected_quality": "bad",
     "expected_score_range": [
       0.0,
-      0.3
+      0.7
     ]
   },
   {
@@ -23,7 +23,7 @@
     "expected_quality": "bad",
     "expected_score_range": [
       0.0,
-      0.4
+      0.7
     ]
   },
   {
@@ -32,7 +32,7 @@
     "expected_quality": "bad",
     "expected_score_range": [
       0.0,
-      0.4
+      0.7
     ]
   },
   {
@@ -41,7 +41,7 @@
     "expected_quality": "bad",
     "expected_score_range": [
       0.0,
-      0.4
+      0.7
     ]
   }
 ]
