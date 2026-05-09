@@ -71,7 +71,13 @@ jobs:
         publish_dir: ./playwright-report
         destination_dir: ./reports/${{ github.run_id }}   # 可选：保留历史报告
         keep_files: false         # 是否保留旧文件（设为 false 会清空 gh-pages 分支上之前的文件，但不会影响其他子目录）
-        force_orphan: false      
+        force_orphan: false  
+        
+    - name: Output report URL
+      run: |
+        REPORT_URL="https://xuanluo111.github.io/id-photo-quality-tester/reports/${{ github.run_id }}/"
+        echo "::notice title=📊 Playwright Test Report::$REPORT_URL"
+        echo "### [点击查看测试报告]($REPORT_URL)" >> $GITHUB_STEP_SUMMARY    
 
   # deploy:
   #   # 确保需要测试任务成功完成（或者即使失败也可部署，用于调试）
