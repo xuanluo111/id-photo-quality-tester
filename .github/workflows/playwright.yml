@@ -66,4 +66,4 @@ jobs:
 
     - name: Run Playwright show-report
       working-directory: ./e2e-tests/playwright-report
-      run: npx playwright show-report name-of-my-extracted-playwright-report
+      run: npx playwright show-report
