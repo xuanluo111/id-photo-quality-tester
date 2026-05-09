@@ -1,0 +1,47 @@
+[
+  {
+    "image_name": "good_1.jpg",
+    "description": "清晰正面照，光线均匀，肤色自然",
+    "expected_quality": "good",
+    "expected_score_range": [
+      0.8,
+      1.0
+    ]
+  },
+  {
+    "image_name": "blurred_1.jpg",
+    "description": "严重模糊，面部轮廓不清",
+    "expected_quality": "bad",
+    "expected_score_range": [
+      0.0,
+      0.3
+    ]
+  },
+  {
+    "image_name": "dark_1.jpg",
+    "description": "整体过暗，五官细节丢失",
+    "expected_quality": "bad",
+    "expected_score_range": [
+      0.0,
+      0.4
+    ]
+  },
+  {
+    "image_name": "bright_1.jpg",
+    "description": "过曝严重，面部发白无细节",
+    "expected_quality": "bad",
+    "expected_score_range": [
+      0.0,
+      0.4
+    ]
+  },
+  {
+    "image_name": "color_cast_1.jpg",
+    "description": "整体偏蓝绿，肤色失真",
+    "expected_quality": "bad",
+    "expected_score_range": [
+      0.0,
+      0.4
+    ]
+  }
+]
