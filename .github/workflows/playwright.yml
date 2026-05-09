@@ -71,3 +71,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./e2e-tests/playwright-report
         destination_dir: ./report/${{ github.run_id }}
+        force_orphan: true
