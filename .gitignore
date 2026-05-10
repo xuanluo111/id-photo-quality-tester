@@ -1,5 +1,4 @@
 e2e-tests/node_modules/
-e2e-tests/test-data/
 backend/venv/
 backend/uploads/*
 !backend/uploads/.gitkeep
