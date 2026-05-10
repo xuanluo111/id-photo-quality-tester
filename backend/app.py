@@ -5,8 +5,10 @@ import os, uuid
 from brisque_evaluator import BRISQUEQualityEvaluator
 
 app = Flask(__name__)
+
+# 作用：启用跨域资源共享（Cross-Origin Resource Sharing）
 CORS(app)
-app.config['UPLOAD_FOLDER'] = './uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
