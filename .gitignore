@@ -1,10 +1,12 @@
 e2e-tests/node_modules/
 e2e-tests/test-data/
 backend/venv/
-backend/uploads/
+backend/uploads/*
+!backend/uploads/.gitkeep
 backend/.idea/
 backend/__pycache__/
 backend/models/*.yml
+!backend/models/.gitkeep
 frontend/.idea/
 .DS_Store
 .env
