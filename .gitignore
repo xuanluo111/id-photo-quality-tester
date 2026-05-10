@@ -7,4 +7,4 @@ backend/__pycache__/
 frontend/.idea/
 .DS_Store
 .env
-scripts/
+scripts/.idea/
