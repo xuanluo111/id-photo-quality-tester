@@ -1,8 +1,9 @@
 e2e-tests/node_modules/
+e2e-tests/test-data/
 backend/venv/
 backend/uploads/
 backend/.idea/
-backend/__pycache__/、*.pyc
+backend/__pycache__/
 backend/models/*.yml
 frontend/.idea/
 .DS_Store
