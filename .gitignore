@@ -4,8 +4,6 @@ backend/uploads/*
 !backend/uploads/.gitkeep
 backend/.idea/
 backend/__pycache__/
-backend/models/*.yml
-!backend/models/.gitkeep
 frontend/.idea/
 .DS_Store
 .env
