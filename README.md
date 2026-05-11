@@ -1,5 +1,3 @@
-[![Playwright Test Report](https://img.shields.io/badge/📊-点击查看最新测试报告-blue?style=for-the-badge)](https://xuanluo111.github.io/id-photo-quality-tester/reports/latest/)
-
 # 证件照图片质量评测系统
 
 [![Playwright Tests](https://github.com/xuanluo111/id-photo-quality-tester/actions/workflows/playwright.yml/badge.svg)](https://github.com/xuanluo111/id-photo-quality-tester/actions/workflows/playwright.yml)
@@ -103,9 +101,8 @@ npx playwright show-report
 
 最新的自动化测试报告已通过 GitHub Pages 在线发布。你可以通过以下方式查看：
 
-1.  **【推荐】** 点击项目 README 顶部的 **“点击查看最新测试报告”** 按钮。
-2.  在仓库的 **Actions** 标签页中，点击任意工作流记录，在 **deploy summary** 区域点击 `点击查看测试报告` 到测试报告页面。
-3.  在仓库的 **Actions** 标签页中，点击任意工作流记录，在 **Artifacts** 区域下载 `playwright-report` 文件到本地查看。
+1.  在仓库的 **Actions** 标签页中，点击任意工作流记录，在 **deploy summary** 区域点击 `点击查看测试报告` 到测试报告页面。
+2.  在仓库的 **Actions** 标签页中，点击任意工作流记录，在 **Artifacts** 区域下载 `playwright-report` 文件到本地查看。
 
 ## 📁 项目结构
 ``` text
