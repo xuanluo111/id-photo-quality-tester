@@ -65,3 +65,63 @@ npx playwright test
 ```bash
 npx playwright show-report
 ```
+
+## 📊 测试策略
+
+### 数据驱动测试
+使用 expected_scores.json 管理测试数据，覆盖多种质量场景
+```json
+[
+  {
+    "image_name": "good_1.jpg",
+    "description": "清晰正面照，光线均匀",
+    "expected_quality": "good",
+    "expected_score_range": [0, 0.7]
+  },
+  {
+    "image_name": "blur_1.jpg",
+    "description": "高斯模糊，细节丢失",
+    "expected_quality": "bad",
+    "expected_score_range": [0.7, 1.0]
+  }
+]
+```
+
+### Page Object 模式
+将页面元素和操作封装在 UploadPage 类中，提高测试可维护性
+
+### CI集成
+每次 git push 自动运行测试
+- 生成 HTML 测试报告
+- 部署到 GitHub Pages
+- 通过PR评论或 Actions Summary 查看报告链接
+
+## 📈 测试报告
+
+最新测试报告会在https://xuanluo111.github.io/id-photo-quality-tester/reports/运行id/
+也可在https://github.com/xuanluo111/id-photo-quality-tester页面点击 Actions 左侧点击Playwright Test -> 点击最新git记录 ->页面的“点击查看测试报告”按钮
+
+## 📁 项目结构
+``` text
+id-photo-quality-tester/
+├── backend/               # Flask + BRISQUE 后端
+│   ├── app.py
+│   ├── brisque_evaluator.py
+│   └── requirements.txt
+├── frontend/              # 简单上传页面
+│   └── index.html
+├── e2e-tests/             # Playwright 测试套件
+│   ├── tests/
+│   │   └── upload.spec.ts
+│   ├── pages/
+│   │   └── UploadPage.ts
+│   ├── test-data/
+│   │   ├── images/        # 测试图片（原始 + 变体）
+│   │   └── expected_scores.json
+│   ├── playwright.config.ts
+│   └── package.json
+├── scripts/               # 辅助脚本
+│   └── generate_test_images.py
+├── .github/workflows/     # CI 配置
+└── README.md
+```
