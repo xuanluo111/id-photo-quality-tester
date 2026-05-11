@@ -34,3 +34,34 @@
 ```bash
 git clone https://github.com/xuanluo111/id-photo-quality-tester.git
 cd id-photo-quality-tester
+```
+
+### 2. 启动后端服务
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python3 app.py
+```
+后端运行在 http://localhost:5001
+
+### 3. 启动前端页面
+```bash
+cd frontend
+npx http-server -p 3000
+```
+前端访问 http://localhost:3000
+
+### 4. 运行E2E测试
+```bash
+cd e2e-tests
+npm install
+npx playwright install
+npx playwright test
+```
+
+### 5. 查看测试报告
+```bash
+npx playwright show-report
+```
