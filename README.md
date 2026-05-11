@@ -140,4 +140,4 @@ MIT
 
 ## 👤 作者
 
-xuanluo111 - [[!GitHub](https://github.com/xuanluo111)]
+xuanluo111 - [GitHub(https://github.com/xuanluo111)]
