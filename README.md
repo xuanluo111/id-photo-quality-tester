@@ -98,8 +98,7 @@ npx playwright show-report
 
 ## 📈 测试报告
 
-最新测试报告会在https://xuanluo111.github.io/id-photo-quality-tester/reports/运行id/
-也可在https://github.com/xuanluo111/id-photo-quality-tester页面点击 Actions 左侧点击Playwright Test -> 点击最新git记录 ->页面的“点击查看测试报告”按钮
+最新测试报告会在https://github.com/xuanluo111/id-photo-quality-tester -> 页面点击 Actions ->左侧点击Playwright Test -> 点击最新git记录 ->页面的“点击查看测试报告”按钮
 
 ## 📁 项目结构
 ``` text
@@ -125,3 +124,20 @@ id-photo-quality-tester/
 ├── .github/workflows/     # CI 配置
 └── README.md
 ```
+
+## ✅ 验收标准
+
+- 后端API返回BRISQUE分数
+- 前端可正常上传并显示结果
+- E2E测试出覆盖5+组数据驱动用例
+- 测试失败时自动截图
+- CI自动运行测试并生成报告
+- 测试报告可在线访问
+
+## 📝 License
+
+MIT
+
+## 👤 作者
+
+xuanluo111 - [[!GitHub](https://github.com/xuanluo111)]
