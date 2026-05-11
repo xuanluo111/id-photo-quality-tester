@@ -8,7 +8,8 @@
 
 **核心功能**：
 - 上传证件照，自动计算 BRISQUE 质量分数
-- 分数越低代表质量越差，阈值 0.7 判定为“合格”
+- **原始 BRISQUE 分数（0-100）越低越好**，后端将其**反转归一化**为 0-1 区间（越高越好）
+- **最终分数 > 0.7 判定为“合格”**
 - 完整的 E2E 测试覆盖（数据驱动 + Page Object 模式）
 - CI 集成，自动生成测试报告并部署到 GitHub Pages
 
@@ -76,13 +77,13 @@ npx playwright show-report
     "image_name": "good_1.jpg",
     "description": "清晰正面照，光线均匀",
     "expected_quality": "good",
-    "expected_score_range": [0, 0.7]
+    "expected_score_range": [0.7, 1.0] // 归一化后的分数，越高越好
   },
   {
     "image_name": "blur_1.jpg",
     "description": "高斯模糊，细节丢失",
     "expected_quality": "bad",
-    "expected_score_range": [0.7, 1.0]
+    "expected_score_range": [0, 0.7] // 低于0.7判定为不合格
   }
 ]
 ```
@@ -98,7 +99,7 @@ npx playwright show-report
 
 ## 📈 测试报告
 
-最新测试报告会在https://github.com/xuanluo111/id-photo-quality-tester -> 页面点击 Actions ->左侧点击Playwright Test -> 点击最新git记录 ->页面的“点击查看测试报告”按钮
+[![Playwright Test Report](https://img.shields.io/badge/📊-点击查看最新测试报告-blue?style=for-the-badge)](https://xuanluo111.github.io/id-photo-quality-tester/reports/25647445761/)
 
 ## 📁 项目结构
 ``` text
