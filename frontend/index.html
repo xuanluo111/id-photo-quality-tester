@@ -13,6 +13,9 @@
             const fileInput = document.getElementById('fileInput');
             const resultDiv = document.getElementById('result');
 
+            // 👇 在这里添加这一行：清空上一次的结果
+            document.getElementById('result').innerHTML = '';
+
             if (!fileInput.files.length) {
                 resultDiv.innerHTML = '<p style="color: orange;">⚠️ 请先选择图片</p>';
                 return;
