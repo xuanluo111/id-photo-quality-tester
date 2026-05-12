@@ -4,13 +4,11 @@ import { captureFullPageFailureShot } from "../helpers/failureScreenshot";
 import testData from "../test-data/expected_scores.json";
 import { UploadPage } from "../pages/UploadPage";
 
-/** 普通用例失败截图子目录 */
 const UPLOAD_SPEC_FAILURE_SUBFOLDER = "upload-spec-failures";
 
-/** 默认等待结果区出现的最长时间（毫秒） */
-const RESULT_VISIBLE_TIMEOUT_MS = 10_000;
+/** 默认套件：评测出分一般快于 AI 大批量；仍与 uploadImage 内成功态等待对齐 */
+const EVALUATION_RESULT_TIMEOUT_MS = 30_000;
 
-/** Fixture 图片根目录 */
 const IMAGE_FIXTURE_DIR = path.resolve(__dirname, "../test-data/images");
 
 test.describe("证件照质量评估 E2E", () => {
@@ -39,11 +37,13 @@ test.describe("证件照质量评估 E2E", () => {
 
             try {
                 const filePath = path.join(IMAGE_FIXTURE_DIR, data.image);
-                await uploadPage.uploadImage(filePath);
+                await uploadPage.uploadImage(filePath, {
+                    resultTimeoutMs: EVALUATION_RESULT_TIMEOUT_MS,
+                });
 
                 const resultPanel = uploadPage.resultDiv;
-                await expect(resultPanel).toBeVisible({
-                    timeout: RESULT_VISIBLE_TIMEOUT_MS,
+                await expect(resultPanel).toContainText("质量判定", {
+                    timeout: 5_000,
                 });
 
                 const quality = await uploadPage.getQuality();

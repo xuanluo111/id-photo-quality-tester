@@ -4,17 +4,15 @@ import { captureFullPageFailureShot } from "../helpers/failureScreenshot";
 import testData from "../test-data/ai_generated_cases.json";
 import { UploadPage } from "../pages/UploadPage";
 
-/** AI 用例失败截图子目录（位于 e2e-tests/test-results 下） */
 const AI_CASE_FAILURE_SUBFOLDER = "ai-case-failures";
 
-/** 结果区渲染较慢时（大图或冷启动）拉长等待上限 */
-const RESULT_VISIBLE_TIMEOUT_MS = 100_000;
+/** 与 AI 用例、冷启动、模型耗时匹配；传给 uploadImage，与 index.html 长耗时评测一致 */
+const EVALUATION_RESULT_TIMEOUT_MS = 100_000;
 
 test.describe("证件照质量评估 E2E — AI 生成用例", () => {
     let uploadPage: UploadPage;
 
     test.beforeEach(async ({ page }) => {
-        // 每个用例独立 Page；UploadPage 负责打开首页
         uploadPage = new UploadPage(page);
         try {
             await uploadPage.goto();
@@ -36,20 +34,20 @@ test.describe("证件照质量评估 E2E — AI 生成用例", () => {
             const caseTag = data.image_name;
 
             try {
-                // Fixture 图片目录（与 spec 同级的 test-data/images）
                 const imageFixtureDir = path.resolve(
                     __dirname,
                     "../test-data/images"
                 );
                 const filePath = path.join(imageFixtureDir, data.image_name);
 
-                // 选文件并触发评测
-                await uploadPage.uploadImage(filePath);
+                // UploadPage 会等到 #result 出现「BRISQUE分数」「质量判定」成功模板，再往下断言
+                await uploadPage.uploadImage(filePath, {
+                    resultTimeoutMs: EVALUATION_RESULT_TIMEOUT_MS,
+                });
 
-                // 结果面板：与断言语义绑定，避免重复链式 locator
                 const resultPanel = uploadPage.resultDiv;
-                await expect(resultPanel).toBeVisible({
-                    timeout: RESULT_VISIBLE_TIMEOUT_MS,
+                await expect(resultPanel).toContainText("BRISQUE分数", {
+                    timeout: 5_000,
                 });
 
                 const quality = await uploadPage.getQuality();
