@@ -10,17 +10,47 @@
     <div id="result"></div>
     <script>
         async function upload() {
-            const file = document.getElementById('fileInput').files[0];
-            if (!file) return;
+            const fileInput = document.getElementById('fileInput');
+            const resultDiv = document.getElementById('result');
+
+            if (!fileInput.files.length) {
+                resultDiv.innerHTML = '<p style="color: orange;">⚠️ 请先选择图片</p>';
+                return;
+            }
+
+            const file = fileInput.files[0];
             const formData = new FormData();
             formData.append('file', file);
-            const res = await fetch('http://localhost:5001/upload', { method: 'POST', body: formData });
-            const data = await res.json();
-            document.getElementById('result').innerHTML = `
-                <p>文件名：${data.filename}</p>
-                <p>BRISQUE分数：${data.brisque_score}</p>
-                <p>质量判定：${data.quality === 'good' ? '✅ 合格' : '❌ 不合格'}</p>
-            `;
+
+            // 显示加载中
+            resultDiv.innerHTML = '<p>⏳ 评测中，请稍候...</p>';
+
+            try {
+                const response = await fetch('http://localhost:5001/upload', {
+                    method: 'POST',
+                    body: formData,
+                    timeout: 30000, // 30s超时
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                const qualityText = data.quality === 'good' ? '✅ 合格' : '❌ 不合格';
+                resultDiv.innerHTML = `
+                    <p>📁 文件名：${data.filename}</p>
+                    <p>🎯 BRISQUE分数：${data.brisque_score}</p>
+                    <p>📊 质量判定：${qualityText}</p>
+                `;
+            } catch (error) {
+                console.error('上传失败：', error);
+                let errorMsg = '❌ 网络请求失败，请检查后端服务是否运行在 http://localhost:5001';
+                if (error.name === 'AbortError' || error.message.includes('timeout')) {
+                    errorMsg = '⏰ 请求超时，请稍后重试';
+                }
+                resultDiv.innerHTML = `<p style="color: red;">${errorMsg}</p>`;
+            }
         }
     </script>
 </body>
