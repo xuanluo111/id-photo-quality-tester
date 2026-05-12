@@ -12,6 +12,6 @@
   {
     "image": "PIC2018.jpg",
     "expectedQuality": "bad",
-    "minScore": 0.60
+    "minScore": 0.67
   }
 ]
