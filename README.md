@@ -112,7 +112,7 @@ npx playwright show-report
 本项目在开发过程中深度使用了 AI 辅助工具：
 
 - **Cursor**：使用 `Cmd+K` 进行内联重构，快速优化断言和错误处理代码；通过 `Cmd+L` 对话生成 Page Object 类初始模板。
-- **DeepSeek API**：编写 Python 脚本调用 API，尝试生成边界测试数据（如不同噪声等级的图片描述），用于扩充数据驱动测试集。此外，scripts/generate_test_data.py 脚本通过 DeepSeek API 生成了额外的测试数据，用于扩充数据驱动测试集。
+- **DeepSeek API**：编写 Python 脚本调用 API，尝试生成边界测试数据（如不同噪声等级的图片描述），用于扩充数据驱动测试集。
 
 这些实践让代码编写效率提升约 40%，也让我对 AI 辅助测试工作流有了更真实的体感。
 
@@ -126,26 +126,27 @@ npx playwright show-report
 ## 📁 项目结构
 ``` text
 id-photo-quality-tester/
-├── backend/               # Flask + BRISQUE 后端
+├── backend/                        # Flask + BRISQUE 后端
 │   ├── app.py
 │   ├── brisque_evaluator.py
 │   └── requirements.txt
-├── frontend/              # 简单上传页面
+├── frontend/                       # 简单上传页面
 │   └── index.html
-├── e2e-tests/             # Playwright 测试套件
+├── e2e-tests/                      # Playwright 测试套件
 │   ├── tests/
-│   │   └── upload.spec.ts # 主测试用例（固定数据）
+│   │   └── upload.spec.ts          # 主测试用例（固定数据）
 │   │   └── upload_ai_case.spec.ts  # AI 增强测试用例
 │   ├── pages/
 │   │   └── UploadPage.ts
 │   ├── test-data/
-│   │   ├── images/        # 测试图片（原始 + 变体）
+│   │   ├── images/                 # 测试图片（原始 + 变体）
 │   │   └── expected_scores.json
+│   │   └── ai_generated_cases.json
 │   ├── playwright.config.ts
 │   └── package.json
-├── scripts/               # 辅助脚本
+├── scripts/                        # 辅助脚本
 │   └── generate_test_images.py
-├── .github/workflows/     # CI 配置
+├── .github/workflows/              # CI 配置
 └── README.md
 ```
 
