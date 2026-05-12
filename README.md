@@ -134,7 +134,7 @@ id-photo-quality-tester/
 │   └── index.html
 ├── e2e-tests/                      # Playwright 测试套件
 │   ├── tests/
-│   │   └── upload.spec.ts          # 主测试用例（固定数据）
+│   │   ├── upload.spec.ts          # 主测试用例（固定数据）
 │   │   └── upload_ai_case.spec.ts  # AI 增强测试用例
 │   ├── pages/
 │   │   └── UploadPage.ts
