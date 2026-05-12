@@ -140,7 +140,7 @@ id-photo-quality-tester/
 │   │   └── UploadPage.ts
 │   ├── test-data/
 │   │   ├── images/                 # 测试图片（原始 + 变体）
-│   │   └── expected_scores.json
+│   │   ├──expected_scores.json
 │   │   └── ai_generated_cases.json
 │   ├── playwright.config.ts
 │   └── package.json
