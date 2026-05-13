@@ -72,13 +72,13 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: playwright-report
-        path: playwright-report   # 解压到当前工作目录下的 playwright-report
+        path: ./e2e-tests/playwright-report   # 解压到当前工作目录下的 playwright-report
 
     - name: Deploy report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./playwright-report
+        publish_dir: ./e2e-tests/playwright-report
         destination_dir: ./reports/${{ github.run_id }}   # 可选：保留历史报告
         keep_files: false         # 是否保留旧文件（设为 false 会清空 gh-pages 分支上之前的文件，但不会影响其他子目录）
         force_orphan: false  
@@ -87,35 +87,4 @@ jobs:
       run: |
         REPORT_URL="https://xuanluo111.github.io/id-photo-quality-tester/reports/${{ github.run_id }}/"
         echo "::notice title=📊 Playwright Test Report::$REPORT_URL"
-        echo "### [点击查看测试报告]($REPORT_URL)" >> $GITHUB_STEP_SUMMARY    
-
-  # deploy:
-  #   # 确保需要测试任务成功完成（或者即使失败也可部署，用于调试）
-  #   needs: test
-  #   # 在任何情况下都运行，方便查看失败报告
-  #   if: always()
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     pages: write      # 授予对 Pages 的写入权限
-  #     id-token: write   # 用于从 OIDC 获取令牌
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deployment.outputs.page_url }}
-  #   steps:
-  #     - name: Download report artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: playwright-report
-  #         path: .e2e-tests/playwright-report
-
-  #     - name: Setup Pages
-  #       uses: actions/configure-pages@v5
-
-  #     - name: Upload Pages artifact
-  #       uses: actions/upload-pages-artifact@v3
-  #       with:
-  #         path: '.e2e-tests/playwright-report'
-
-  #     - name: Deploy to GitHub Pages
-  #       id: deployment
-  #       uses: actions/deploy-pages@v4
+        echo "### [点击查看测试报告]($REPORT_URL)" >> $GITHUB_STEP_SUMMARY
