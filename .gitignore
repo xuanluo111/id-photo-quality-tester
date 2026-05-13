@@ -8,3 +8,4 @@ frontend/.idea/
 .DS_Store
 .env
 scripts/.idea/
+backend/.env
