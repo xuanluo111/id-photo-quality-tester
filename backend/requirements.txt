@@ -3,7 +3,6 @@ flask-cors
 scikit-image==0.21.0
 werkzeug
 opencv-contrib-python
-opencv-python==4.8.0
 numpy==1.24.3
 openai>=1.0.0
 python-dotenv>=1.0.0
