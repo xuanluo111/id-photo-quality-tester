@@ -4,5 +4,6 @@ scikit-image==0.21.0
 werkzeug
 opencv-contrib-python
 numpy==1.24.3
-openai>=1.0.0
-python-dotenv>=1.0.0
+openai
+python-dotenv
+opencv-python
