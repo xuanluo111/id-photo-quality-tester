@@ -6,4 +6,3 @@ opencv-contrib-python
 numpy
 openai
 python-dotenv
-opencv-python

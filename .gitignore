@@ -9,3 +9,5 @@ frontend/.idea/
 .env
 scripts/.idea/
 backend/.env
+backend/ai_evaluator/__pycache__/
+backend/evaluation_report*.json

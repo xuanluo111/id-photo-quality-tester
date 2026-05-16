@@ -14,6 +14,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from brisque_evaluator import BRISQUEQualityEvaluator
+from ai_evaluator.evaluator import AIResponseEvaluator
 
 logger = logging.getLogger(__name__)
 
@@ -120,6 +121,106 @@ def upload_file():
         }
     )
 
+
+@app.route("/api/evaluate-llm", methods=["POST"])
+def evaluate_llm():
+    """评估大模型回答质量的API"""
+    try:
+        data = request.get_json() or {}
+        run_times = data.get('run_times', 1)
+
+        evaluator = AIResponseEvaluator()
+        report = evaluator.run_full_evaluation(run_times=run_times)
+
+        # 检查 report 是否有效
+        if report is None:
+            return jsonify({
+                "success": False,
+                "error": "评估失败，返回结果为空"
+            }), 500
+
+        if "error" in report:
+            return jsonify({
+                "success": False,
+                "error": report["error"]
+            }), 500
+
+        return jsonify({
+            "success": True,
+            "report": report,
+            "message": f"评估完成。综合得分: {report['summary']['avg_final_score']}/10"
+        })
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
+
+@app.route("/api/evaluate-llm/single", methods=["POST"])
+def evaluate_llm_single():
+    """评估单个问题的API"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "请求体不能为空"}), 400
+
+        question = data.get('question')
+        if not question:
+            return jsonify({"success": False, "error": "缺少 question 参数"}), 400
+
+        # 创建评估器
+        evaluator = AIResponseEvaluator()
+
+        # 直接调用模型获取回答
+        answer = evaluator.call_target_model(question)
+
+        return jsonify({
+            "success": True,
+            "question": question,
+            "answer": answer,
+            "model": "deepseek-chat",
+            "note": "如需完整评估（与标准答案对比），请使用 /api/evaluate-llm 接口"
+        })
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/evaluate-llm/compare", methods=["POST"])
+def evaluate_llm_compare():
+    """对比两个模型的回答质量"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "请求体不能为空"}), 400
+
+        question = data.get('question')
+        if not question:
+            return jsonify({"success": False, "error": "缺少 question 参数"}), 400
+
+        # 评估 DeepSeek（注意：参数名是 target_model，不是 taget_model）
+        evaluator = AIResponseEvaluator(target_model="deepseek-chat")
+        deepseek_answer = evaluator.call_target_model(question)
+
+        # 可以在这里添加其他模型的对比
+        # 例如：通义千问、文心一言等
+
+        return jsonify({
+            "success": True,
+            "question": question,
+            "models": {
+                "deepseek-chat": {
+                    "answer": deepseek_answer,
+                    "model_name": "DeepSeek Chat",
+                    "note": "如需完整质量评分，请使用 /api/evaluate-llm 接口"
+                }
+            }
+        })
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 @app.errorhandler(RequestEntityTooLarge)
 @app.errorhandler(413)
