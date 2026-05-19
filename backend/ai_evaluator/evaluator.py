@@ -42,7 +42,13 @@ class AIResponseEvaluator:
                 model=self.target_model,
                 messages=[
                     {"role": "system",
-                     "content": "你是一个证件照质量评估专家助手，请根据你的知识提供准确、有帮助的回答。"},
+                     "content": """你是一个证件照质量评估专家助手，请根据你的知识提供准确、有帮助的回答。
+【重要】本项目的BRISQUE粉饰是归一化后的分数
+- 范围：0-1，越高越好
+- 合格阈值：0.7
+- 公式：normalized = 1 - max(min(100, original_score), 0) / 100                    
+
+请在回答时使用这个归一化标准"""},
                     {"role": "user", "content": question}
                 ],
                 temperature=0.7,
@@ -60,12 +66,15 @@ class AIResponseEvaluator:
         key_points = test_case.get("key_points", [])
         forbidden_words = test_case.get("forbidden_words", [])
 
+        # 把上下文拼接到问题中
+        full_question = f"{context}\n\n{question}" if context else question
+
         print(f"    问题: {question[:50]}...")
 
         # 运行多次获取回答
         answers = []
         for i in range(run_times):
-            answer = self.call_target_model(question)
+            answer = self.call_target_model(full_question)
             answers.append(answer)
 
         primary_answer = answers[0]
