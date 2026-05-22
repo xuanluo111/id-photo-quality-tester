@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 from .judge import DeepSeekJudge
 from .metrics import QualityMetrics
+from .judge_glm4 import GLM4Judge
 
 load_dotenv()
 
@@ -16,19 +17,46 @@ load_dotenv()
 class AIResponseEvaluator:
     """大模型回答质量评估器"""
 
-    def __init__(self, target_model: str = "deepseek-chat"):
+    def __init__(self, target_model: str = "deepseek-chat", judge_type: str = "deepseek"):
+        """
+
+        :param target_model: 被评估的模型 "deepseek-chat" 或 "glm4"
+        :param judge_type: 裁判模型 "deepseek" 或 "glm4"
+        """
         api_key = os.getenv("DEEPSEEK_API_KEY")
         if not api_key:
             raise ValueError("DEEPSEEK_API_KEY 环境变量未设置")
 
-        self.target_client = OpenAI(
-            api_key=api_key,
-            base_url="https://api.deepseek.com"
-        )
         self.target_model = target_model
+        self.target_client = self._get_client(target_model)
         self.metrics = QualityMetrics()
-        self.judge = DeepSeekJudge()
+        self.judge_instance = self._get_judge(judge_type)
         self.golden_set = self._load_golden_set()
+
+    def _get_client(self, model: str):
+        """获取模型客户端"""
+        if model == "glm4":
+            api_key = os.getenv("ZHIPUAI_API_KEY")
+            if not api_key:
+                raise ValueError("ZHIPUAI_API_KEY 环境变量未设置")
+            base_url = "https://open.bigmodel.cn/api/paas/v4/"
+            model_name = "glm-4-plus"
+            # model_name = "glm-4-flash"
+        else:
+            api_key = os.getenv("DEEPSEEK_API_KEY")
+            if not api_key:
+                raise ValueError("DEEPSEEK_API_KEY 环境变量未设置")
+            base_url = "https://api.deepseek.com"
+            model_name = "deepseek-chat"
+        self.model_name = model_name
+        return OpenAI(api_key=api_key, base_url=base_url)
+
+    def _get_judge(self, judge_type: str):
+        """获取裁判实例"""
+        if judge_type == "glm4":
+            return GLM4Judge()
+        else:
+            return DeepSeekJudge()
 
     def _load_golden_set(self) -> Dict:
         golden_path = os.path.join(os.path.dirname(__file__), "golden_set.json")
@@ -39,11 +67,11 @@ class AIResponseEvaluator:
         """调用被评估的大模型获取回答"""
         try:
             response = self.target_client.chat.completions.create(
-                model=self.target_model,
+                model=self.model_name,
                 messages=[
                     {"role": "system",
                      "content": """你是一个证件照质量评估专家助手，请根据你的知识提供准确、有帮助的回答。
-【重要】本项目的BRISQUE粉饰是归一化后的分数
+【重要】本项目的BRISQUE分数是归一化后的分数
 - 范围：0-1，越高越好
 - 合格阈值：0.7
 - 公式：normalized = 1 - max(min(100, original_score), 0) / 100                    
@@ -89,7 +117,7 @@ class AIResponseEvaluator:
 
         # 2. LLM-as-Judge 打分
         print("    调用 LLM Judge...")
-        judge_result = self.judge.evaluate(
+        judge_result = self.judge_instance.evaluate(
             question=question,
             answer=primary_answer,
             golden_answer=golden_answer,
@@ -109,6 +137,7 @@ class AIResponseEvaluator:
 
         # 最终得分 = 自动评分40% + LLM评委分60%
         final_score = auto_total * 0.4 + judge_result["total_score"] * 0.6
+        # final_score = auto_total
         final_score = round(min(10, max(0, final_score)), 1)
 
         print(f"    自动分: {auto_total:.1f}, 评委分: {judge_result['total_score']:.1f}, 最终: {final_score:.1f}")

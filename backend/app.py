@@ -129,7 +129,7 @@ def evaluate_llm():
         data = request.get_json() or {}
         run_times = data.get('run_times', 1)
 
-        evaluator = AIResponseEvaluator()
+        evaluator = AIResponseEvaluator(target_model="glm4", judge_type="glm4")
         report = evaluator.run_full_evaluation(run_times=run_times)
 
         # 检查 report 是否有效
@@ -171,7 +171,7 @@ def evaluate_llm_single():
             return jsonify({"success": False, "error": "缺少 question 参数"}), 400
 
         # 创建评估器
-        evaluator = AIResponseEvaluator()
+        evaluator = AIResponseEvaluator(target_model="glm4", judge_type="glm4")
 
         # 直接调用模型获取回答
         answer = evaluator.call_target_model(question)
@@ -180,7 +180,7 @@ def evaluate_llm_single():
             "success": True,
             "question": question,
             "answer": answer,
-            "model": "deepseek-chat",
+            "model": "glm-4-plus",
             "note": "如需完整评估（与标准答案对比），请使用 /api/evaluate-llm 接口"
         })
 
@@ -201,11 +201,14 @@ def evaluate_llm_compare():
             return jsonify({"success": False, "error": "缺少 question 参数"}), 400
 
         # 评估 DeepSeek（注意：参数名是 target_model，不是 taget_model）
-        evaluator = AIResponseEvaluator(target_model="deepseek-chat")
+        evaluator = AIResponseEvaluator(target_model="deepseek-chat", judge_type="deepseek")
         deepseek_answer = evaluator.call_target_model(question)
 
         # 可以在这里添加其他模型的对比
         # 例如：通义千问、文心一言等
+        # 智谱
+        evaluator_glm4 = AIResponseEvaluator(target_model="glm4", judge_type="glm4")
+        glm4_answer = evaluator_glm4.call_target_model(question)
 
         return jsonify({
             "success": True,
@@ -214,6 +217,11 @@ def evaluate_llm_compare():
                 "deepseek-chat": {
                     "answer": deepseek_answer,
                     "model_name": "DeepSeek Chat",
+                    "note": "如需完整质量评分，请使用 /api/evaluate-llm 接口"
+                },
+                "glm4": {
+                    "answer": glm4_answer,
+                    "model_name": "Glm4",
                     "note": "如需完整质量评分，请使用 /api/evaluate-llm 接口"
                 }
             }

@@ -1,4 +1,3 @@
-# backend/ai_evaluator/judge_glm4.py
 import os
 import json
 import re
@@ -21,7 +20,8 @@ class GLM4Judge():
             api_key=api_key,
             base_url="https://open.bigmodel.cn/api/paas/v4/"
         )
-        self.model = "glm-4-flash"
+        # self.model = "glm-4-flash"
+        self.model = "glm-4-plus"
 
     def get_name(self) -> str:
         return "GLM-4 Judge (Few-shot)"

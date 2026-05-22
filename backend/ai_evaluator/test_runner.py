@@ -21,7 +21,7 @@ def main():
     try:
         # 初始化评估器
         print("\n1. 初始化评估器...")
-        evaluator = AIResponseEvaluator()
+        evaluator = AIResponseEvaluator(target_model="glm4", judge_type="glm4")
         print("   ✅ 评估器初始化成功")
 
         # 运行完整评估
