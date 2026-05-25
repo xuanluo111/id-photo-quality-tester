@@ -27,7 +27,7 @@ class AIResponseEvaluator:
         if not api_key:
             raise ValueError("DEEPSEEK_API_KEY 环境变量未设置")
 
-        self.target_model = target_model
+        # self.target_model = target_model
         self.target_client = self._get_client(target_model)
         self.metrics = QualityMetrics()
         self.judge_instance = self._get_judge(judge_type)
