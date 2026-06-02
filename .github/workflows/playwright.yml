@@ -18,7 +18,15 @@ jobs:
     - name: Install dependencies
       working-directory: ./e2e-tests
       run: npm ci
+    - name: Cache Playwright browsers
+      uses: actions/cache@v4
+      id: playwright-cache
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
     - name: Install Playwright Browsers
+      env:
+        PLAYWRIGHT_DOWNLOAD_HOST: 'https://npmmirror.com/mirrors/playwright/'
       working-directory: ./e2e-tests
       run: npx playwright install --with-deps
 
