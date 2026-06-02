@@ -20,16 +20,24 @@ jobs:
       working-directory: ./e2e-tests
       run: npm ci
 
+    - name: Install serve globally
+      run: npm install -g serve
+
+    
+
     # 启动前端 (http-server)
-    - name: Start frontend (http-server) on all interfaces
+    - name: Start frontend
       run: |
         cd frontend
-        npx http-server -p 3000 --host 0.0.0.0 &
-        # 等待服务真正启动（最多30秒）
+        serve -l 3000 --no-clipboard &
         for i in {1..30}; do
-          if curl -s http://localhost:3000 > /dev/null; then
+          if curl -s http://127.0.0.1:3000 > /dev/null; then
             echo "Frontend ready"
             break
+          fi
+          if [ $i -eq 30 ]; then
+            echo "Failed to start frontend"
+            exit 1
           fi
           sleep 1
         done
