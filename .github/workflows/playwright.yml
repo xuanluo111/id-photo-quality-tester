@@ -10,7 +10,7 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/playwright:v1.47.0-jammy   # 镜像里已经包含浏览器和依赖
+    container: mcr.microsoft.com/playwright:v1.59.1-jammy   # 镜像里已经包含浏览器和依赖
     steps:
     - uses: actions/checkout@v5
     - uses: actions/setup-node@v5
