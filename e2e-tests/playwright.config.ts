@@ -22,7 +22,7 @@ export default defineConfig({
     workers: process.env.CI ? 2 : undefined,
     // ✅ 新增：自动启动前端服务
     webServer: {
-        command: 'cd ../frontend && python3 -m http.server 3000 --bind 0.0.0.0',
+        command: 'cd ../frontend && npx http-server -p 3000',
         port: 3000,
         reuseExistingServer: !process.env.CI,
         timeout: 120 * 1000,
