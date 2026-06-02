@@ -26,11 +26,15 @@ jobs:
         cd frontend
         npx http-server -p 3000 &
         sleep 3    # 等待服务启动  
+    
+    - name: Install python3-venv
+      run: sudo apt update && sudo apt install -y python3-venv
 
     # 可选：启动后端 Flask
     - name: Start backend
       run: |
         cd backend
+        sudo apt update && sudo apt install -y python3-venv
         python3 -m venv venv
         source venv/bin/activate
         pip install -r requirements.txt
