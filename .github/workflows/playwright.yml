@@ -19,28 +19,6 @@ jobs:
     - name: Install dependencies
       working-directory: ./e2e-tests
       run: npm ci
-
-    - name: Install serve globally
-      run: npm install -g serve
-
-    
-
-    # 启动前端 (http-server)
-    - name: Start frontend
-      run: |
-        cd frontend
-        serve -l 3000 --no-clipboard &
-        for i in {1..30}; do
-          if curl -s http://127.0.0.1:3000 > /dev/null; then
-            echo "Frontend ready"
-            break
-          fi
-          if [ $i -eq 30 ]; then
-            echo "Failed to start frontend"
-            exit 1
-          fi
-          sleep 1
-        done
     
     # 可选：启动后端 Flask
     - name: Start backend
