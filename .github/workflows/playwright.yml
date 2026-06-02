@@ -21,11 +21,18 @@ jobs:
       run: npm ci
 
     # 启动前端 (http-server)
-    - name: Start frontend
+    - name: Start frontend (http-server)
       run: |
         cd frontend
-        npx http-server -p 3000 &
-        sleep 3    # 等待服务启动  
+        apt update && apt install -y curl
+        npx http-server -p 3000 --host 0.0.0.0 &
+        for i in {1..30}; do
+          if curl -s http://localhost:3000 > /dev/null; then
+            echo "Frontend is ready"
+            break
+          fi
+          sleep 1
+        done 
     
     # 可选：启动后端 Flask
     - name: Start backend
