@@ -119,7 +119,7 @@ jobs:
         echo "### [点击查看测试报告]($REPORT_URL)" >> $GITHUB_STEP_SUMMARY
 
     - name: Send FeiShu card on deploy failure
-      if: steps.deploy.outcome != 'failure'
+      if: steps.deploy.outcome == 'failure'
       env:
         WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_XUANLUO }}
         REPO: ${{ github.repository }}
