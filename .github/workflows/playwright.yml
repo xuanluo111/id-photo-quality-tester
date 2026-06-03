@@ -58,39 +58,35 @@ jobs:
         destination_dir: ./latest
         force_orphan: true
     
-    - name: Send FeiShu notification on failure
+    - name: Send FeiShu card on test failure
       if: steps.test.outcome == 'failure'
       env:
-        WEBHOOK_URL: ${{secrets.FEISHU_WEBHOOK_XUANLUO}}
+        WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_XUANLUO }}
+        REPO: ${{ github.repository }}
+        BRANCH: ${{ github.ref_name }}
+        ACTOR: ${{ github.actor }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: |
-        curl -X POST -H "Content-Type: application/json" -d '{
-          "msg_type": "post",
-          "content": {
-            "post": {
-              "zh_cn": {
-                "title": "PlayWright 测试失败",
-                "content": [
-                  [
-                    {"tag": "text", "text":"仓库："},
-                    {"tag": "a", "href": "${{ github.server_url }}/${{ github.repository }}", "text": "${{ github.repository }}"}
-                  ],
-                  [
-                    {"tag": "text", "text": "分支："},
-                    {"tag": "text", "text": "${{ github.ref_name }}"}
-                  ],
-                  [
-                    {"tag": "text", "text":"提交者："},
-                    {"tag": "text", "text":"${{ github.actor }}"}
-                  ],
-                  [
-                    {"tag": "a", "href": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "text": "点击查看详情"}
-                  ]
-                ]
+        MESSAGE=$(cat <<EOF
+        {
+          "msg_type": "interactive",
+          "card": {
+            "config": {"wide_screen_mode": true, "enable_forward": true},
+            "header": {"title": {"content": "🚨 测试流水线告警", "tag": "plain_text"}},
+            "elements": [
+              {
+                "tag": "div",
+                "text": {
+                    "content":"**<font color='red'>Playwright 测试失败</font>**\n 仓库：${REPO}\n> 分支：${BRANCH}\n> 提交者：${ACTOR}\n> 查看详情：[点击这里](${RUN_URL})\n\n<at id=all></at>",
+                    "tag": "lark_md"
+                }
               }
-            }
+            ]
           }
-        }' $WEBHOOK_URL
-
+        }
+        EOF
+        )
+        curl -X POST -H "Content-Type: application/json" -d "$MESSAGE" $WEBHOOK_URL
   deploy:
     needs: test
     if: always()
