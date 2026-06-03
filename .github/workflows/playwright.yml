@@ -49,15 +49,6 @@ jobs:
         path: ./e2e-tests/playwright-report/
         retention-days: 30
 
-    - name: Deploy report to GitHub Pages
-      if: always()
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./e2e-tests/playwright-report
-        destination_dir: ./latest
-        force_orphan: true
-    
     - name: Send FeiShu card on test failure
       if: steps.test.outcome == 'failure'
       env:
@@ -87,6 +78,47 @@ jobs:
         EOF
         )
         curl -X POST -H "Content-Type: application/json" -d "$MESSAGE" $WEBHOOK_URL
+
+    - name: Deploy report to GitHub Pages
+      id: deploy
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./e2e-tests/playwright-report
+        destination_dir: ./latest
+        force_orphan: true
+
+    - name: Send FeiShu card on deploy failure
+      if: steps.deploy.outcome == 'failure'
+      env:
+        WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_XUANLUO }}
+        REPO: ${{ github.repository }}
+        BRANCH: ${{ github.ref_name }}
+        ACTOR: ${{ github.actor }}
+        DEPLOY_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        MESSAGE=$(cat <<EOF
+        {
+          "msg_type": "interactive",
+          "card": {
+            "config": {"wide_screen_mode": true, "enable_forward": true},
+            "header": {"title": {"content": "🚨 部署流水线告警", "tag": "plain_text"}},
+            "elements": [
+              {
+                "tag": "div",
+                "text": {
+                    "content":"**<font color='red'>GitHub Pages 部署失败</font>**\n 仓库：${REPO}\n> 分支：${BRANCH}\n> 提交者：${ACTOR}\n> 查看详情：[点击这里](${DEPLOY_URL})\n\n<at id=all></at>",
+                    "tag": "lark_md"
+                }
+              }
+            ]
+          }
+        }
+        EOF
+        )
+        curl -X POST -H "Content-Type: application/json" -d "$MESSAGE" $WEBHOOK_URL
+    
   deploy:
     needs: test
     if: always()
