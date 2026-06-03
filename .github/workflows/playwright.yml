@@ -56,6 +56,39 @@ jobs:
         publish_dir: ./e2e-tests/playwright-report
         destination_dir: ./latest
         force_orphan: true
+    
+    - name: Send FeiShu notification on failure
+      if: steps.test.outcome == 'failure'
+      env:
+        WEBHOOK_URL: ${{secrets.FEISHU_WEBHOOK_XUANLUO}}
+      run: |
+        curl -X POST -H "Content-Type: application/json" -d '{
+          "msg_type": "post",
+          "content": {
+            "post": {
+              "zh_cn": {
+                "title": "PlayWright 测试失败",
+                "content": [
+                  [
+                    {"tag": "text", "text":"仓库："},
+                    {"tag": "a", "href": "${{ github.server_url }}/${{ github.repository }}", "text": "${{ github.repository }}"}
+                  ],
+                  [
+                    {"tag": "text", "text": "分支："},
+                    {"tag": "text", "text": "${{ github.ref_name }}"}
+                  ],
+                  [
+                    {"tag": "text", "text":"提交者："},
+                    {"tag": "text", "text":"${{ github.actor }}"}
+                  ],
+                  [
+                    {"tag": "a", "href": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "text": "点击查看详情"}
+                  ]
+                ]
+              }
+            }
+          }
+        }' $WEBHOOK_URL
 
   deploy:
     needs: test
