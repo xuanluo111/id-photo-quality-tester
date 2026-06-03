@@ -80,7 +80,6 @@ jobs:
         curl -X POST -H "Content-Type: application/json" -d "$MESSAGE" $WEBHOOK_URL
 
     - name: Deploy report to GitHub Pages
-      id: deploy
       if: always()
       uses: peaceiris/actions-gh-pages@v3
       with:
@@ -88,6 +87,36 @@ jobs:
         publish_dir: ./e2e-tests/playwright-report
         destination_dir: ./latest
         force_orphan: true
+
+
+  deploy:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write        # 需要写入权限以推送到 gh-pages 分支
+    steps:
+    - name: Download report artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: playwright-report
+        path: ./e2e-tests/playwright-report   # 解压到当前工作目录下的 playwright-report
+
+    - name: Deploy report to GitHub Pages
+      id: deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./e2e-tests/playwright-report
+        destination_dir: ./reports/${{ github.run_id }}   # 可选：保留历史报告
+        keep_files: false         # 是否保留旧文件（设为 false 会清空 gh-pages 分支上之前的文件，但不会影响其他子目录）
+        force_orphan: false  
+        
+    - name: Output report URL
+      run: |
+        REPORT_URL="https://xuanluo111.github.io/id-photo-quality-tester/reports/${{ github.run_id }}/"
+        echo "::notice title=📊 Playwright Test Report::$REPORT_URL"
+        echo "### [点击查看测试报告]($REPORT_URL)" >> $GITHUB_STEP_SUMMARY
 
     - name: Send FeiShu card on deploy failure
       if: steps.deploy.outcome == 'failure'
@@ -118,31 +147,3 @@ jobs:
         EOF
         )
         curl -X POST -H "Content-Type: application/json" -d "$MESSAGE" $WEBHOOK_URL
-    
-  deploy:
-    needs: test
-    if: always()
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write        # 需要写入权限以推送到 gh-pages 分支
-    steps:
-    - name: Download report artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: playwright-report
-        path: ./e2e-tests/playwright-report   # 解压到当前工作目录下的 playwright-report
-
-    - name: Deploy report to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./e2e-tests/playwright-report
-        destination_dir: ./reports/${{ github.run_id }}   # 可选：保留历史报告
-        keep_files: false         # 是否保留旧文件（设为 false 会清空 gh-pages 分支上之前的文件，但不会影响其他子目录）
-        force_orphan: false  
-        
-    - name: Output report URL
-      run: |
-        REPORT_URL="https://xuanluo111.github.io/id-photo-quality-tester/reports/${{ github.run_id }}/"
-        echo "::notice title=📊 Playwright Test Report::$REPORT_URL"
-        echo "### [点击查看测试报告]($REPORT_URL)" >> $GITHUB_STEP_SUMMARY
