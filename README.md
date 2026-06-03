@@ -173,6 +173,20 @@ npx playwright test tests/llm_evaluation.spec.ts
 1.  【最可靠】在仓库的 **Actions** 标签页中，点击任意工作流记录，在 **deploy summary** 区域点击 `点击查看测试报告` 到测试报告页面。
 2.  在仓库的 **Actions** 标签页中，点击任意工作流记录，在 **Artifacts** 区域下载 `playwright-report` 文件到本地查看。
 
+## 🚨 CI 飞书失败通知
+本项目在 GitHub Actions 流水线中集成了飞书机器人通知，当 Playwright 测试失败 或 GitHub Pages 部署失败 时，会自动向群聊发送告警卡片，包含仓库、分支、提交者和详情链接，并 @ 所有人。配置详见 [.github/workflows/playwright.yml](链接) 或按以下步骤：
+
+### 配置步骤：
+1.飞书建群 -> 群设置 -> 群机器人 -> 添加自定义机器人。
+2.安全设置选 **自定义关键词**，填**测试失败**。
+3.复制 **Webhook** 地址。
+4.GitHub仓库 -> Settings -> Secrets -> Actions -> 新增 -> FEISHU_WEBHOOK，值填Webhook地址。
+5.推送代码，CI失败即可收到通知
+
+### 效果：
+卡片含仓库、分支、提交者、详情链接，并@所有人
+
+
 ## 📁 项目结构
 ``` text
 id-photo-quality-tester/
