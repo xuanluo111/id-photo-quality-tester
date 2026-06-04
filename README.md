@@ -122,8 +122,9 @@ npx playwright show-report
 - API方式：POST /api/evaluate-llm
 - 查看生成的 evaluation_report_*.json 报告，包含总分、分类得分、各用例详细反馈。
 
-**API 接口**
+**API 接口** 
 | 接口 | 方法	| 说明 |
+|------|------|------|
 | /api/evaluate-llm |	POST | 运行完整评估，返回 JSON 报告 |
 | /api/evaluate-llm/single | POST | 单问题快速问答 |
 | /api/evaluate-llm/compare	| POST | 对比 DeepSeek 和 GLM-4 对同一问题的回答 |
